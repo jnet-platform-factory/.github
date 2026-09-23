@@ -1,0 +1,44 @@
+name: Bug report
+description: Something in a published artifact does not behave as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before you start: if this is a **security** issue, please do not file it
+        here. See [SECURITY.md](https://github.com/jnet-platform-factory/.github/blob/main/SECURITY.md).
+
+        These repositories are generated mirrors, so a fix arrives as a new
+        version rather than as a commit here.
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The SAR SemanticVersion, module tag, or commit you are on.
+      placeholder: "1.4.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and what happened instead
+      description: Include the exact error where there is one.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Smallest reproduction you have
+      description: Parameters you deployed with, or the module block you wrote.
+      render: shell
+
+  - type: checkboxes
+    id: scrubbed
+    attributes:
+      label: Before submitting
+      options:
+        - label: I have removed account ids, ARNs and hostnames from anything I pasted.
+          required: true

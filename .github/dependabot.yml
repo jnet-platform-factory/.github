@@ -1,0 +1,26 @@
+# Org-wide default. GitHub applies this to repositories that do not define
+# their own.
+#
+# Security updates only, deliberately. These repositories are generated
+# mirrors: a version-bump pull request here cannot be merged, because the next
+# release regenerates the tree from the private source and reverts it. What is
+# wanted is the ALERT, so the bump can be made upstream where it sticks.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+
+  - package-ecosystem: terraform
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
