@@ -1,0 +1,9 @@
+[components/api] terraform:   # module.api.aws_lambda_function.handler will be created
+[components/api] terraform:   + resource "aws_lambda_function" "handler" {
+[components/api] terraform:   # module.api.aws_iam_role_policy.this["arn:aws:iam::210987654321:role/x"] will be updated in-place
+[components/api] terraform:   # aws_cloudwatch_log_group.api must be replaced
+[components/api] terraform: 
+[0m[1mPlan:[0m 2 to add, 1 to change, 0 to destroy.
+12:00:01.000 STDOUT [components/queue] terraform:   # aws_sqs_queue.legacy will be destroyed
+12:00:01.000 STDOUT [components/queue] terraform: Plan: 0 to add, 0 to change, 1 to destroy.
+12:00:02.000 STDOUT [components/dns] terraform: No changes. Your infrastructure matches the configuration.

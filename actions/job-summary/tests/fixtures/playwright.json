@@ -1,0 +1,11 @@
+{
+  "suites": [
+    {"title": "login.spec.ts", "file": "login.spec.ts", "specs": [
+      {"title": "signs in", "ok": true},
+      {"title": "rejects bad password", "ok": false}
+    ], "suites": [
+      {"title": "sso", "specs": [{"title": "redirects to provider", "ok": false}]}
+    ]}
+  ],
+  "stats": {"expected": 7, "unexpected": 2, "flaky": 1, "skipped": 3, "duration": 4321.5}
+}

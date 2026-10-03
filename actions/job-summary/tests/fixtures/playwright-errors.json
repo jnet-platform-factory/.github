@@ -1,0 +1,205 @@
+{
+ "config": {
+  "rootDir": "/home/runner/work/app/app/e2e"
+ },
+ "suites": [
+  {
+   "title": "sample.spec.js",
+   "file": "sample.spec.js",
+   "column": 0,
+   "line": 0,
+   "specs": [],
+   "suites": [
+    {
+     "title": "orders api",
+     "file": "sample.spec.js",
+     "line": 2,
+     "column": 6,
+     "specs": [
+      {
+       "title": "returns 200",
+       "ok": true,
+       "tags": [],
+       "tests": [
+        {
+         "timeout": 2000,
+         "annotations": [],
+         "expectedStatus": "passed",
+         "projectId": "",
+         "projectName": "",
+         "results": [
+          {
+           "workerIndex": 0,
+           "parallelIndex": 0,
+           "status": "passed",
+           "duration": 3,
+           "errors": [],
+           "stdout": [],
+           "stderr": [],
+           "retry": 0,
+           "startTime": "2026-01-01T00:00:00.000Z",
+           "annotations": [],
+           "attachments": []
+          }
+         ],
+         "status": "expected"
+        }
+       ],
+       "id": "775aa06a839d2ee5676f-b856bc74ef8e5f11b87a",
+       "file": "sample.spec.js",
+       "line": 3,
+       "column": 3
+      },
+      {
+       "title": "lists orders",
+       "ok": false,
+       "tags": [],
+       "tests": [
+        {
+         "timeout": 2000,
+         "annotations": [],
+         "expectedStatus": "passed",
+         "projectId": "",
+         "projectName": "",
+         "results": [
+          {
+           "workerIndex": 0,
+           "parallelIndex": 0,
+           "status": "failed",
+           "duration": 20,
+           "error": {
+            "message": "Error: GET /orders should succeed\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m",
+            "stack": "Error: GET /orders should succeed\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at /home/runner/work/app/app/e2e/sample.spec.js:6:56",
+            "location": {
+             "file": "/home/runner/work/app/app/e2e/sample.spec.js",
+             "column": 56,
+             "line": 6
+            },
+            "snippet": "\u001b[0m \u001b[90m 4 |\u001b[39m   test(\u001b[32m'lists orders'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ request }) \u001b[33m=>\u001b[39m {\n \u001b[90m 5 |\u001b[39m     \u001b[36mconst\u001b[39m res \u001b[33m=\u001b[39m { status\u001b[33m:\u001b[39m () \u001b[33m=>\u001b[39m \u001b[35m500\u001b[39m }\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 6 |\u001b[39m     expect(res\u001b[33m.\u001b[39mstatus()\u001b[33m,\u001b[39m \u001b[32m'GET /orders should succeed'\u001b[39m)\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m   |\u001b[39m                                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 7 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 8 |\u001b[39m   test(\u001b[32m'times out'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m { \u001b[36mawait\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mPromise\u001b[39m(r \u001b[33m=>\u001b[39m setTimeout(r\u001b[33m,\u001b[39m \u001b[35m5000\u001b[39m))\u001b[33m;\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 9 |\u001b[39m   test\u001b[33m.\u001b[39mskip(\u001b[32m'later'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {})\u001b[33m;\u001b[39m\u001b[0m"
+           },
+           "errors": [
+            {
+             "location": {
+              "file": "/home/runner/work/app/app/e2e/sample.spec.js",
+              "column": 56,
+              "line": 6
+             },
+             "message": "Error: GET /orders should succeed\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n\n\u001b[0m \u001b[90m 4 |\u001b[39m   test(\u001b[32m'lists orders'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ request }) \u001b[33m=>\u001b[39m {\n \u001b[90m 5 |\u001b[39m     \u001b[36mconst\u001b[39m res \u001b[33m=\u001b[39m { status\u001b[33m:\u001b[39m () \u001b[33m=>\u001b[39m \u001b[35m500\u001b[39m }\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 6 |\u001b[39m     expect(res\u001b[33m.\u001b[39mstatus()\u001b[33m,\u001b[39m \u001b[32m'GET /orders should succeed'\u001b[39m)\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m   |\u001b[39m                                                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 7 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 8 |\u001b[39m   test(\u001b[32m'times out'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m { \u001b[36mawait\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mPromise\u001b[39m(r \u001b[33m=>\u001b[39m setTimeout(r\u001b[33m,\u001b[39m \u001b[35m5000\u001b[39m))\u001b[33m;\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m 9 |\u001b[39m   test\u001b[33m.\u001b[39mskip(\u001b[32m'later'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m {})\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at /home/runner/work/app/app/e2e/sample.spec.js:6:56\u001b[22m"
+            }
+           ],
+           "stdout": [],
+           "stderr": [],
+           "retry": 0,
+           "startTime": "2026-01-01T00:00:00.000Z",
+           "annotations": [],
+           "attachments": [],
+           "errorLocation": {
+            "file": "/home/runner/work/app/app/e2e/sample.spec.js",
+            "column": 56,
+            "line": 6
+           }
+          }
+         ],
+         "status": "unexpected"
+        }
+       ],
+       "id": "775aa06a839d2ee5676f-418afaaccde0983846df",
+       "file": "sample.spec.js",
+       "line": 4,
+       "column": 3
+      },
+      {
+       "title": "times out",
+       "ok": false,
+       "tags": [],
+       "tests": [
+        {
+         "timeout": 2000,
+         "annotations": [],
+         "expectedStatus": "passed",
+         "projectId": "",
+         "projectName": "",
+         "results": [
+          {
+           "workerIndex": 1,
+           "parallelIndex": 0,
+           "status": "timedOut",
+           "duration": 2002,
+           "error": {
+            "message": "\u001b[31mTest timeout of 2000ms exceeded.\u001b[39m",
+            "stack": "\u001b[31mTest timeout of 2000ms exceeded.\u001b[39m"
+           },
+           "errors": [
+            {
+             "message": "\u001b[31mTest timeout of 2000ms exceeded.\u001b[39m"
+            }
+           ],
+           "stdout": [],
+           "stderr": [],
+           "retry": 0,
+           "startTime": "2026-01-01T00:00:00.000Z",
+           "annotations": [],
+           "attachments": []
+          }
+         ],
+         "status": "unexpected"
+        }
+       ],
+       "id": "775aa06a839d2ee5676f-caecab5483733e558576",
+       "file": "sample.spec.js",
+       "line": 8,
+       "column": 3
+      },
+      {
+       "title": "later",
+       "ok": true,
+       "tags": [],
+       "tests": [
+        {
+         "timeout": 2000,
+         "annotations": [
+          {
+           "type": "skip"
+          }
+         ],
+         "expectedStatus": "skipped",
+         "projectId": "",
+         "projectName": "",
+         "results": [
+          {
+           "workerIndex": -1,
+           "parallelIndex": -1,
+           "status": "skipped",
+           "duration": 0,
+           "errors": [],
+           "stdout": [],
+           "stderr": [],
+           "retry": 0,
+           "startTime": "2026-01-01T00:00:00.000Z",
+           "annotations": [],
+           "attachments": []
+          }
+         ],
+         "status": "skipped"
+        }
+       ],
+       "id": "775aa06a839d2ee5676f-f38ca17c001c4d4efcfa",
+       "file": "sample.spec.js",
+       "line": 9,
+       "column": 8
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "errors": [],
+ "stats": {
+  "startTime": "2026-01-01T00:00:00.000Z",
+  "duration": 2664.351,
+  "expected": 1,
+  "skipped": 1,
+  "unexpected": 2,
+  "flaky": 0
+ }
+}

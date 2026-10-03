@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites><testsuite name="pytest" errors="0" failures="1" skipped="1" tests="4">
+<testcase classname="tests.test_handler" name="test_ok" time="0.01"/>
+<testcase classname="tests.test_handler" name="test_also_ok" time="0.01"/>
+<testcase classname="tests.test_handler" name="test_broken" time="0.02"><failure message="assert 1 == 2">assert 1 == 2</failure></testcase>
+<testcase classname="tests.test_handler" name="test_later" time="0"><skipped message="later"/></testcase>
+</testsuite></testsuites>
