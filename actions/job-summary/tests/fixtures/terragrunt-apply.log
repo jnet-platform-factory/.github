@@ -1,1 +1,5 @@
+  # aws_s3_bucket.assets will be created
+Plan: 2 to add, 1 to change, 0 to destroy.
+aws_s3_bucket.assets: Creating...
+  # aws_s3_bucket.assets will be created
 Apply complete! Resources: 2 added, 1 changed, 0 destroyed.

@@ -1,0 +1,26 @@
+{
+ "config": {
+  "rootDir": "/home/runner/work/app/app/e2e"
+ },
+ "suites": [],
+ "errors": [
+  {
+   "message": "SyntaxError: /home/runner/work/app/app/e2e/broken.spec.js: Missing semicolon. (1:74)\n\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 1 |\u001b[39m \u001b[36mconst\u001b[39m { test } \u001b[33m=\u001b[39m require(\u001b[32m'@playwright/test'\u001b[39m)\u001b[33m;\u001b[39m test(\u001b[32m'x'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m { \u001b[36mthis\u001b[39m is not js })\u001b[33m;\u001b[39m\n \u001b[90m   |\u001b[39m                                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 2 |\u001b[39m\u001b[0m",
+   "stack": "SyntaxError: /home/runner/work/app/app/e2e/broken.spec.js: Missing semicolon. (1:74)\n\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 1 |\u001b[39m \u001b[36mconst\u001b[39m { test } \u001b[33m=\u001b[39m require(\u001b[32m'@playwright/test'\u001b[39m)\u001b[33m;\u001b[39m test(\u001b[32m'x'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m { \u001b[36mthis\u001b[39m is not js })\u001b[33m;\u001b[39m\n \u001b[90m   |\u001b[39m                                                                           \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 2 |\u001b[39m\u001b[0m",
+   "location": {
+    "file": "/home/runner/work/app/app/e2e/broken.spec.js",
+    "line": 1,
+    "column": 74
+   },
+   "snippet": "\u001b[90m   at \u001b[39mbroken.spec.js:1\n\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 1 |\u001b[39m \u001b[36mconst\u001b[39m { test } \u001b[33m=\u001b[39m require(\u001b[32m'@playwright/test'\u001b[39m)\u001b[33m;\u001b[39m test(\u001b[32m'x'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m () \u001b[33m=>\u001b[39m { \u001b[36mthis\u001b[39m is not js })\u001b[33m;\u001b[39m\n \u001b[90m   |\u001b[39m                                                                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 2 |\u001b[39m\u001b[0m"
+  }
+ ],
+ "stats": {
+  "startTime": "2026-01-01T00:00:00.000Z",
+  "duration": 23.92500000000001,
+  "expected": 0,
+  "skipped": 0,
+  "unexpected": 0,
+  "flaky": 0
+ }
+}

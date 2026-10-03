@@ -23,17 +23,27 @@ inputs:
     description: Newline- or comma-separated globs of JUnit XML files (pytest, jest, vitest, …).
     default: ""
   playwright-json:
-    description: Glob of Playwright JSON report file(s).
+    description: >-
+      Glob of Playwright JSON report file(s). Each failing test is shown with
+      its error message and location; errors that broke the run are shown too.
     default: ""
   tf-plan:
-    description: Glob of Terraform/Terragrunt log file(s); every plan and apply line is counted.
+    description: >-
+      Glob of Terraform/Terragrunt log file(s). Plan and apply totals are summed
+      and every resource change is listed (address and action, not the diff).
     default: ""
   markdown:
     description: Extra Markdown appended under the summary as-is.
     default: ""
   max-failures:
-    description: How many failing test names to list.
+    description: How many failing tests (with their error) to show.
     default: "10"
+  max-error-lines:
+    description: Lines of each test's error message to show before truncating.
+    default: "20"
+  max-plan-resources:
+    description: Resource changes to list from tf-plan before truncating.
+    default: "50"
 
 outputs:
   overall:
@@ -66,6 +76,8 @@ runs:
         JS_TF_PLAN: ${{ inputs.tf-plan }}
         JS_MARKDOWN: ${{ inputs.markdown }}
         JS_MAX_FAILURES: ${{ inputs.max-failures }}
+        JS_MAX_ERROR_LINES: ${{ inputs.max-error-lines }}
+        JS_MAX_PLAN_RESOURCES: ${{ inputs.max-plan-resources }}
       run: |
         python3 "$GITHUB_ACTION_PATH/summary.py" \
           || echo "::warning title=job-summary::summary step failed; the job is unaffected"

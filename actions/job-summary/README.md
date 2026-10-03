@@ -6,8 +6,11 @@ without opening the logs. It shows:
 - a result headline (✅ / ❌ / 🚫 / ⏭️);
 - a key/value table for stage, URL, version and similar;
 - a per-job results table;
-- unit and E2E test counts with the failing test names;
-- Terraform/Terragrunt plan and apply counts.
+- unit test counts with the failing test names;
+- E2E (Playwright) counts with **each failing test's error message and location**, plus
+  any error that broke the run before tests finished;
+- Terraform/Terragrunt plan and apply counts, and **every resource change** (address and
+  action, riskiest first).
 
 The action **never fails the job it runs in**. A file it can't read becomes a warning row,
 and an unexpected error becomes a `::warning::` annotation. It needs only `python3` and
@@ -59,7 +62,9 @@ summary:
 | `playwright-json` |         | Glob of a Playwright JSON report (`--reporter=json`, `PLAYWRIGHT_JSON_OUTPUT_NAME`).                                                                                       |
 | `tf-plan`         |         | Globs of Terraform/Terragrunt logs. Every `Plan:` and `Apply complete!` line is summed, and any destroy is flagged.                                                        |
 | `markdown`        |         | Extra Markdown appended as-is.                                                                                                                                             |
-| `max-failures`    | `10`    | How many failing test names to list.                                                                                                                                       |
+| `max-failures` | `10` | How many failing tests (with their error) to show. |
+| `max-error-lines` | `20` | Lines of each error message before truncating. |
+| `max-plan-resources` | `50` | Resource changes listed from `tf-plan` before truncating. |
 
 Outputs: `overall`, `passed`, `failed`, `skipped`.
 
@@ -71,6 +76,13 @@ Outputs: `overall`, `passed`, `failed`, `skipped`.
   failed runs still get a summary, and `continue-on-error` so the summary can never decide the
   outcome.
 - Link out (URL, release, artifact) rather than pasting logs.
+
+## Redaction
+
+AWS account IDs, ARNs and bearer/token values are redacted from error messages and resource
+addresses before they are rendered. The plan lists only resource addresses and actions,
+never the attribute diff, because diffs carry ARNs, IDs and configuration values. This is
+defence in depth, not a licence to pass sensitive values.
 
 ## Versioning
 

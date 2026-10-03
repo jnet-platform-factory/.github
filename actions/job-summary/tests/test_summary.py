@@ -101,8 +101,31 @@ class Playwright(unittest.TestCase):
         md, out = render(title="E2E", playwright_json=fx("playwright.json"))
         self.assertEqual((out["passed"], out["failed"], out["skipped"]), ("7", "2", "3"))
         self.assertIn("❌ **E2E tests** — 7 passed · 2 failed · 3 skipped · 1 flaky", md)
-        self.assertIn("- `login.spec.ts › rejects bad password`", md)
-        self.assertIn("- `login.spec.ts › sso › redirects to provider`", md)
+        self.assertIn("**❌ login.spec.ts › rejects bad password**", md)
+        self.assertIn("**❌ login.spec.ts › sso › redirects to provider**", md)
+        self.assertIn("_No error message in the report._", md)
+
+    def test_error_message_location_and_timeout_from_a_real_report(self):
+        md, out = render(title="E2E", playwright_json=fx("playwright-errors.json"))
+        self.assertEqual((out["passed"], out["failed"], out["skipped"]), ("1", "2", "1"))
+        self.assertIn("**❌ sample.spec.js › orders api › lists orders** — `sample.spec.js:6`", md)
+        self.assertIn("Error: GET /orders should succeed", md)
+        self.assertIn("Expected: 200\nReceived: 500", md)   # ANSI colours stripped
+        self.assertNotIn("\x1b[", md)
+        self.assertIn("**❌ sample.spec.js › orders api › times out** — `sample.spec.js:8` · timed out", md)
+        self.assertIn("Test timeout of 2000ms exceeded.", md)
+
+    def test_run_error_is_a_failure_even_with_zero_stats(self):
+        md, out = render(title="E2E", playwright_json=fx("playwright-run-error.json"))
+        self.assertEqual(out["overall"], "failure")
+        self.assertIn("❌ **E2E tests** — the run failed before any test finished", md)
+        self.assertIn("**❌ Run error** — `broken.spec.js:1`", md)
+        self.assertIn("SyntaxError:", md)
+        self.assertNotIn("/home/runner/work/app/app/e2e/broken.spec.js:", md.split("```")[0])
+
+    def test_long_messages_are_truncated(self):
+        md, _ = render(title="E2E", playwright_json=fx("playwright-errors.json"), max_error_lines="2")
+        self.assertIn("more line(s) — see the full report", md)
 
 
 class TerraformPlan(unittest.TestCase):
@@ -115,9 +138,41 @@ class TerraformPlan(unittest.TestCase):
         md, _ = render(title="Infra", tf_plan=fx("terragrunt-apply.log"))
         self.assertIn("**Applied** — 2 added · 1 changed · 0 destroyed (1 apply(s))", md)
 
+    def test_resource_table_sorted_by_risk_with_component(self):
+        md, _ = render(title="Infra", tf_plan=fx("terragrunt-plan.log"))
+        table = md[md.index("| Change | Resource | Component |"):]
+        self.assertLess(table.index("🗑️ destroy"), table.index("♻️ replace"))
+        self.assertLess(table.index("♻️ replace"), table.index("🔄 update"))
+        self.assertLess(table.index("🔄 update"), table.index("➕ create"))
+        self.assertIn("| ➕ create | `module.api.aws_lambda_function.handler` | `components/api` |", md)
+        self.assertIn("| 🗑️ destroy | `aws_sqs_queue.legacy` | `components/queue` |", md)
+
+    def test_apply_log_does_not_double_count_resources(self):
+        md, _ = render(title="Infra", tf_plan=fx("terragrunt-apply.log"))
+        self.assertEqual(md.count("`aws_s3_bucket.assets`"), 1)
+
+    def test_resource_table_is_capped(self):
+        md, _ = render(title="Infra", tf_plan=fx("terragrunt-plan.log"), max_plan_resources="1")
+        self.assertIn("…and 3 more", md)
+
     def test_log_without_plan(self):
         md, _ = render(title="Infra", tf_plan=fx("needs.json"))
         self.assertIn("no plan or apply result found", md)
+
+
+class Redaction(unittest.TestCase):
+    def test_account_ids_arns_and_tokens_never_render(self):
+        text = ("arn:aws:iam::123456789012:role/deploy failed for 123456789012; "
+                "Authorization: Bearer abcdefghijklmnop12345 ; build 1.123456789012.3")
+        out = summary.redact(text)
+        self.assertNotIn("123456789012:role", out)
+        self.assertIn("arn:…", out)
+        self.assertIn("for ‹account›", out)
+        self.assertNotIn("abcdefghijklmnop12345", out)
+
+    def test_plan_addresses_are_redacted(self):
+        md, _ = render(title="Infra", tf_plan=fx("terragrunt-plan.log"))
+        self.assertNotIn("210987654321", md)
 
 
 class Script(unittest.TestCase):
