@@ -11,13 +11,13 @@ inputs:
   status:
     description: >-
       success | failure | cancelled | skipped, or "auto" to derive it from
-      `needs` and the test results. Inside a job, pass `${{ job.status }}`.
+      `needs` and the test results. Inside a job, pass the job.status expression.
     default: auto
   rows:
     description: 'Newline-separated "Key: value" rows. URLs become links; other values render as code.'
     default: ""
   needs:
-    description: Pass `${{ toJSON(needs) }}` to render a per-job result table.
+    description: Pass the toJSON(needs) expression to render a per-job result table.
     default: ""
   junit:
     description: Newline- or comma-separated globs of JUnit XML files (pytest, jest, vitest, …).
