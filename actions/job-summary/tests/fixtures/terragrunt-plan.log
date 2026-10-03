@@ -1,0 +1,4 @@
+[components/api] terraform: 
+[0m[1mPlan:[0m 2 to add, 1 to change, 0 to destroy.
+12:00:01.000 STDOUT [components/queue] terraform: Plan: 0 to add, 0 to change, 1 to destroy.
+12:00:02.000 STDOUT [components/dns] terraform: No changes. Your infrastructure matches the configuration.

@@ -1,0 +1,5 @@
+{
+  "deploy": {"result": "success", "outputs": {"url": "https://example.test"}},
+  "migrations": {"result": "skipped", "outputs": {}},
+  "e2e": {"result": "failure", "outputs": {}}
+}

@@ -1,0 +1,71 @@
+name: Job summary
+description: >-
+  Append a compact, consistent result summary to the job's summary page:
+  a result headline, a key/value table, per-job results, test counts and
+  Terraform plan counts. Never fails the job it runs in.
+
+inputs:
+  title:
+    description: Heading, e.g. "Deploy — dev · web". Include the matrix leg in matrix jobs.
+    required: true
+  status:
+    description: >-
+      success | failure | cancelled | skipped, or "auto" to derive it from
+      `needs` and the test results. Inside a job, pass `${{ job.status }}`.
+    default: auto
+  rows:
+    description: 'Newline-separated "Key: value" rows. URLs become links; other values render as code.'
+    default: ""
+  needs:
+    description: Pass `${{ toJSON(needs) }}` to render a per-job result table.
+    default: ""
+  junit:
+    description: Newline- or comma-separated globs of JUnit XML files (pytest, jest, vitest, …).
+    default: ""
+  playwright-json:
+    description: Glob of Playwright JSON report file(s).
+    default: ""
+  tf-plan:
+    description: Glob of Terraform/Terragrunt log file(s); every plan and apply line is counted.
+    default: ""
+  markdown:
+    description: Extra Markdown appended under the summary as-is.
+    default: ""
+  max-failures:
+    description: How many failing test names to list.
+    default: "10"
+
+outputs:
+  overall:
+    description: The rendered result — success, failure, cancelled or skipped.
+    value: ${{ steps.render.outputs.overall }}
+  passed:
+    description: Passed tests across `junit` and `playwright-json`.
+    value: ${{ steps.render.outputs.passed }}
+  failed:
+    description: Failed tests across `junit` and `playwright-json`.
+    value: ${{ steps.render.outputs.failed }}
+  skipped:
+    description: Skipped tests across `junit` and `playwright-json`.
+    value: ${{ steps.render.outputs.skipped }}
+
+runs:
+  using: composite
+  steps:
+    - id: render
+      shell: bash
+      env:
+        # Inputs travel as environment variables, never interpolated into the
+        # script, so a value can't inject shell.
+        JS_TITLE: ${{ inputs.title }}
+        JS_STATUS: ${{ inputs.status }}
+        JS_ROWS: ${{ inputs.rows }}
+        JS_NEEDS: ${{ inputs.needs }}
+        JS_JUNIT: ${{ inputs.junit }}
+        JS_PLAYWRIGHT_JSON: ${{ inputs.playwright-json }}
+        JS_TF_PLAN: ${{ inputs.tf-plan }}
+        JS_MARKDOWN: ${{ inputs.markdown }}
+        JS_MAX_FAILURES: ${{ inputs.max-failures }}
+      run: |
+        python3 "$GITHUB_ACTION_PATH/summary.py" \
+          || echo "::warning title=job-summary::summary step failed; the job is unaffected"

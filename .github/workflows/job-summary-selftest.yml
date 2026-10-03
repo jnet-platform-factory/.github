@@ -1,0 +1,66 @@
+name: job-summary self-test
+
+on:
+  pull_request:
+    paths: ["actions/job-summary/**", ".github/workflows/job-summary-selftest.yml"]
+  push:
+    branches: [main]
+    paths: ["actions/job-summary/**", ".github/workflows/job-summary-selftest.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unit tests
+        run: python3 -m unittest discover -s actions/job-summary/tests -v
+
+      - name: Render — tests, rows and links
+        id: tests
+        uses: ./actions/job-summary
+        with:
+          title: Self-test — tests
+          rows: |
+            Ref: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          junit: actions/job-summary/tests/fixtures/*-pass.xml, actions/job-summary/tests/fixtures/pytest-fail.xml
+          playwright-json: actions/job-summary/tests/fixtures/playwright.json
+
+      - name: Render — needs table
+        id: needs
+        uses: ./actions/job-summary
+        with:
+          title: Self-test — needs
+          needs: '{"deploy": {"result": "success"}, "e2e": {"result": "skipped"}}'
+
+      - name: Render — plan log and a missing file
+        id: plan
+        uses: ./actions/job-summary
+        with:
+          title: Self-test — plan
+          status: ${{ job.status }}
+          tf-plan: actions/job-summary/tests/fixtures/terragrunt-*.log
+          junit: does-not-exist/*.xml
+
+      - name: Check outputs
+        env:
+          TESTS_OVERALL: ${{ steps.tests.outputs.overall }}
+          TESTS_PASSED: ${{ steps.tests.outputs.passed }}
+          TESTS_FAILED: ${{ steps.tests.outputs.failed }}
+          NEEDS_OVERALL: ${{ steps.needs.outputs.overall }}
+          PLAN_OVERALL: ${{ steps.plan.outputs.overall }}
+        run: |
+          set -euo pipefail
+          test "$TESTS_OVERALL" = failure
+          test "$TESTS_PASSED" = 11   # 2 jest + 2 pytest + 7 playwright
+          test "$TESTS_FAILED" = 3    # 1 pytest + 2 playwright
+          test "$NEEDS_OVERALL" = success
+          test "$PLAN_OVERALL" = success
+          echo "outputs as expected"

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="src/lib/format.test.ts" tests="1" failures="0" errors="1" skipped="0">
+  <testcase classname="src/lib/format.test.ts" name="formats dates" time="0.004"><error message="TypeError">TypeError: x is undefined</error></testcase>
+</testsuite>
