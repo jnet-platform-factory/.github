@@ -1,0 +1,112 @@
+name: Jira comment
+description: >-
+  Keep one living CI/CD comment per Jira issue, repository, app and
+  environment. Green runs edit it in place; the first run, failures,
+  recoveries and milestones post a new comment. Never fails the job.
+
+inputs:
+  issue-keys:
+    description: Jira issue keys separated by spaces, commas or newlines. Case-insensitive; empty skips.
+    required: true
+  jira-url:
+    description: Jira base URL, e.g. https://acme.atlassian.net
+    required: true
+  jira-email:
+    description: Email of the Atlassian account the API token belongs to.
+    required: true
+  jira-token:
+    description: Jira API token.
+    required: true
+  environment:
+    description: Environment the run targeted, e.g. DEV, PREVIEW, PR CI, PRE-PRODUCTION, PRODUCTION, RELEASE.
+    default: ""
+  status:
+    description: >-
+      success | failure | removed | cancelled. "removed" marks a torn-down
+      environment; "cancelled" leaves the ticket alone.
+    default: success
+  mode:
+    description: >-
+      living (default) keeps one comment per issue, repo, app and environment.
+      milestone always posts a new comment (production deploys, release tags).
+    default: living
+  label:
+    description: Header naming what ran, e.g. "🔌 API · orders-api". Defaults to the repository name plus the app.
+    default: ""
+  app:
+    description: App or service within the repository. Part of the comment identity, so each app gets its own comment.
+    default: ""
+  repo:
+    description: Repository name used in the comment identity. Defaults to the current repository.
+    default: ""
+  url:
+    description: Deployed URL shown on the headline.
+    default: ""
+  summary:
+    description: Word after the status icon. Defaults to deployed / failed / removed.
+    default: ""
+  failed-steps:
+    description: 'One "Step: result" line per failed step. Shown only when status is failure.'
+    default: ""
+  details:
+    description: One short extra line, e.g. "infra ✅ · migrations ✅". Markdown links are allowed.
+    default: ""
+  body:
+    description: >-
+      Freeform text that replaces the templated headline. Markdown links and
+      bare URLs become links. The comment identity rules still apply.
+    default: ""
+  transition-to:
+    description: Optional target status name to move each issue to (case-insensitive). Skipped when unavailable.
+    default: ""
+  property-key:
+    description: Jira comment property used to find the living comment.
+    default: jnet-cicd
+  key-pattern:
+    description: Regular expression a valid issue key must match, after upper-casing.
+    default: "[A-Z][A-Z0-9]+-[0-9]+"
+  run-url:
+    description: Link for the run. Defaults to this workflow run.
+    default: ""
+
+outputs:
+  action:
+    description: What happened on the first issue — posted, updated, skipped or warned.
+    value: ${{ steps.comment.outputs.action }}
+  comment-id:
+    description: Jira comment id posted or updated on the first issue.
+    value: ${{ steps.comment.outputs.comment-id }}
+  results:
+    description: '"KEY:action" for every issue, space-separated.'
+    value: ${{ steps.comment.outputs.results }}
+
+runs:
+  using: composite
+  steps:
+    - id: comment
+      shell: bash
+      env:
+        # Inputs travel as environment variables, never interpolated into the
+        # script, so a value can't inject shell.
+        JC_ISSUE_KEYS: ${{ inputs.issue-keys }}
+        JC_JIRA_URL: ${{ inputs.jira-url }}
+        JC_JIRA_EMAIL: ${{ inputs.jira-email }}
+        JC_JIRA_TOKEN: ${{ inputs.jira-token }}
+        JC_ENVIRONMENT: ${{ inputs.environment }}
+        JC_STATUS: ${{ inputs.status }}
+        JC_MODE: ${{ inputs.mode }}
+        JC_LABEL: ${{ inputs.label }}
+        JC_APP: ${{ inputs.app }}
+        JC_REPO: ${{ inputs.repo }}
+        JC_URL: ${{ inputs.url }}
+        JC_SUMMARY: ${{ inputs.summary }}
+        JC_FAILED_STEPS: ${{ inputs.failed-steps }}
+        JC_DETAILS: ${{ inputs.details }}
+        JC_BODY: ${{ inputs.body }}
+        JC_TRANSITION_TO: ${{ inputs.transition-to }}
+        JC_PROPERTY_KEY: ${{ inputs.property-key }}
+        JC_KEY_PATTERN: ${{ inputs.key-pattern }}
+        JC_RUN_URL: ${{ inputs.run-url }}
+      run: |
+        python3 "$GITHUB_ACTION_PATH/jira_comment.py" \
+          || echo "::warning title=jira-comment::comment step failed; the job is unaffected"
