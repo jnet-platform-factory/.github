@@ -1,0 +1,147 @@
+name: jira-comment self-test
+
+on:
+  pull_request:
+    paths:
+      ["actions/jira-comment/**", ".github/workflows/jira-comment-selftest.yml"]
+  push:
+    branches: [main]
+    paths:
+      ["actions/jira-comment/**", ".github/workflows/jira-comment-selftest.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  JIRA: http://127.0.0.1:8765
+  JIRA_NO_EXPAND: http://127.0.0.1:8766
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unit tests
+        run: python3 -m unittest discover -s actions/jira-comment/tests -v
+
+      - name: Start fake Jira servers
+        run: |
+          python3 actions/jira-comment/tests/fake_jira.py 8765 > /tmp/jira.log 2>&1 &
+          python3 actions/jira-comment/tests/fake_jira.py 8766 --no-expand > /tmp/jira-no-expand.log 2>&1 &
+          for port in 8765 8766; do
+            for _ in $(seq 1 50); do curl -s "http://127.0.0.1:$port/" >/dev/null && break; sleep 0.1; done
+          done
+
+      - name: First green run posts
+        id: first
+        uses: ./actions/jira-comment
+        with:
+          issue-keys: test-1
+          jira-url: ${{ env.JIRA }}
+          jira-email: ci@example.com
+          jira-token: not-a-secret
+          environment: DEV
+          url: https://app.example.com
+
+      - name: Second green run edits
+        id: second
+        uses: ./actions/jira-comment
+        with:
+          issue-keys: TEST-1
+          jira-url: ${{ env.JIRA }}
+          jira-email: ci@example.com
+          jira-token: not-a-secret
+          environment: DEV
+          details: infra ✅ · migrations ✅
+
+      - name: Failure posts
+        id: failure
+        uses: ./actions/jira-comment
+        with:
+          issue-keys: TEST-1
+          jira-url: ${{ env.JIRA }}
+          jira-email: ci@example.com
+          jira-token: not-a-secret
+          environment: DEV
+          status: failure
+          failed-steps: |
+            Unit tests: failure
+
+      - name: Recovery posts
+        id: recovered
+        uses: ./actions/jira-comment
+        with:
+          issue-keys: TEST-1
+          jira-url: ${{ env.JIRA }}
+          jira-email: ci@example.com
+          jira-token: not-a-secret
+          environment: DEV
+
+      - name: Milestone posts
+        id: milestone
+        uses: ./actions/jira-comment
+        with:
+          issue-keys: TEST-1 TEST-2
+          jira-url: ${{ env.JIRA }}
+          jira-email: ci@example.com
+          jira-token: not-a-secret
+          environment: PRODUCTION
+          mode: milestone
+
+      - name: Without expand — first run posts
+        id: ne_first
+        uses: ./actions/jira-comment
+        with:
+          issue-keys: TEST-1
+          jira-url: ${{ env.JIRA_NO_EXPAND }}
+          jira-email: ci@example.com
+          jira-token: not-a-secret
+          environment: DEV
+
+      - name: Without expand — second run edits
+        id: ne_second
+        uses: ./actions/jira-comment
+        with:
+          issue-keys: TEST-1
+          jira-url: ${{ env.JIRA_NO_EXPAND }}
+          jira-email: ci@example.com
+          jira-token: not-a-secret
+          environment: DEV
+
+      - name: Unreachable Jira only warns
+        id: unreachable
+        uses: ./actions/jira-comment
+        with:
+          issue-keys: TEST-1
+          jira-url: http://127.0.0.1:9
+          jira-email: ci@example.com
+          jira-token: not-a-secret
+          environment: DEV
+
+      - name: Check outputs
+        env:
+          FIRST: ${{ steps.first.outputs.action }}
+          SECOND: ${{ steps.second.outputs.action }}
+          SAME_ID: ${{ steps.first.outputs.comment-id == steps.second.outputs.comment-id }}
+          FAILURE: ${{ steps.failure.outputs.action }}
+          RECOVERED: ${{ steps.recovered.outputs.action }}
+          MILESTONE: ${{ steps.milestone.outputs.results }}
+          NE_FIRST: ${{ steps.ne_first.outputs.action }}
+          NE_SECOND: ${{ steps.ne_second.outputs.action }}
+          UNREACHABLE: ${{ steps.unreachable.outputs.action }}
+        run: |
+          set -euo pipefail
+          test "$FIRST" = posted
+          test "$SECOND" = updated
+          test "$SAME_ID" = true
+          test "$FAILURE" = posted
+          test "$RECOVERED" = posted
+          test "$MILESTONE" = "TEST-1:posted TEST-2:posted"
+          test "$NE_FIRST" = posted
+          test "$NE_SECOND" = updated
+          test "$UNREACHABLE" = warned
+          grep -q "POST /rest/api/3/comment/list" /tmp/jira-no-expand.log || true
+          echo "outputs as expected"
