@@ -1,23 +1,20 @@
-# Platform Factory
+# Hector
 
-Reusable AWS and CI building blocks, published from a private monorepo.
+Head of Engineering & Product Development at [JunctionNet AI](https://junctionnet.ai). Amsterdam.
 
-Each repository here is a **generated mirror** of a narrow, declared set of
-files — a template, its source, a licence, a readme, and nothing else.
-Development happens privately; a release regenerates the mirror, so what you
-read here is exactly what the corresponding published version ships.
+I build event-driven platforms on AWS: Lambda, EventBridge, SAM, Terraform.
 
-## What that means if you are reading one of these
+## Three layers of a platform
 
-- **They do not take pull requests.** The next release would overwrite the
-  merge. Issues are read and are the way to reach us.
-- **A version is never replaced.** Serverless Application Repository versions
-  are immutable and Terraform Registry tags are not re-ingested when moved, so
-  a fix is always a new version.
-- **Nothing here is specific to us.** Anything account-, tenant- or
-  hostname-shaped is a parameter with no default. If you find one that is not,
-  please report it — see [SECURITY.md](../SECURITY.md).
+Every multi-account AWS platform I build has the same three layers. Each layer has one job
+and an open-source starting point in [**jnet-platform-factory**](https://github.com/jnet-platform-factory).
 
-## Licence
+| Layer            | The job                                                                         | Start here                                                                                                                                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1 · Account**  | Make a fresh account deployable, with no long-lived keys                        | [aws-account-bootstrap](https://github.com/jnet-platform-factory/aws-account-bootstrap)                                                                                                                           |
+| **2 · Platform** | Give every tenant the same foundation: Terragrunt, events, monitoring, config   | [aws-event-driven-platform-blueprint](https://github.com/jnet-platform-factory/aws-event-driven-platform-blueprint) · [Terraform modules](https://github.com/orgs/jnet-platform-factory/repositories?q=terraform) |
+| **3 · Service**  | Keep each Lambda small, with logging, errors and telemetry in shared middleware | [python-lambda-common](https://github.com/jnet-platform-factory/python-lambda-common)                                                                                                                             |
 
-Apache-2.0 unless a repository says otherwise.
+**Seeing what's running:**
+[every EventBridge event in OpenSearch](https://github.com/jnet-platform-factory/aws-eventbridge-firehose-opensearch-forwarder),
+and [a daily health email for each account](https://github.com/jnet-platform-factory/aws-daily-monitoring-report).
